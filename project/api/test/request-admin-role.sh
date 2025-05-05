@@ -1,0 +1,1 @@
+curl -X PATCH http://localhost:8080/profiles/admin-request -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2N2ZjZWZlMjcyYzEyM2QxZjRjYmY4YWEiLCJyb2xlIjoicmVndWxhciIsImlhdCI6MTc0NDY0Mzk3NX0.qz5rbCPfHz_psmsyUitc_n02MiVvLfCmEIYQ_F7G5GQ' -H 'Content-Type: application/json' -d '{"secretWord":"frieren"}' -v
