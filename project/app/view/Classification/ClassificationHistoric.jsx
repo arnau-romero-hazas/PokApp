@@ -78,7 +78,7 @@ export default function ClassificationHistoric({ navigation }) {
         renderItem={renderItem}
       />
       {error && <Text style={styles.errorText}>{error}</Text>}
-      <Button title='Volver a Clasificación Actual' onPress={() => navigation.navigate('ClassificationScreen')} />
+      <Button title='Volver a Clasificación Actual' onPress={() => navigation.navigate('Classification')} />
       <NavBar navigation={navigation} />
     </PokerBackground2>
   )

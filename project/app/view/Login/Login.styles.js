@@ -40,10 +40,16 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16
   },
+  buttonDisabled: {
+    opacity: 0.5
+  },
   link: {
     color: '#f4e04d',
     marginTop: 20,
-    textAlign: 'center'
+    textAlign: 'center',
+    textShadowColor: '#000',              // 👈 sombra para mejor legibilidad
+    textShadowOffset: { width: 0.5, height: 0.5 },
+    textShadowRadius: 1
   }
 })
 

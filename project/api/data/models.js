@@ -1,4 +1,4 @@
-import { constant }   from 'com'
+import { constant } from '../../com/constant.js'
 import { Schema, model, Types } from 'mongoose'
 
 

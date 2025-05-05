@@ -39,7 +39,38 @@ const styles = StyleSheet.create({
     textShadowColor: '#000',
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 1
+  },
+  subtitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#f4e04d',
+    marginBottom: 10,
+    marginTop: 20,
+    textAlign: 'center',
+    textShadowColor: '#000',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2
+  },
+  userList: {
+    maxHeight: 200,
+    marginBottom: 20
+  },
+  userItem: {
+    padding: 10,
+    backgroundColor: '#333',
+    borderColor: '#f4e04d',
+    borderWidth: 1,
+    borderRadius: 8,
+    marginBottom: 8
+  },
+  userItemSelected: {
+    backgroundColor: '#2b4c3e'
+  },
+  userText: {
+    color: '#fff',
+    textAlign: 'center'
   }
+
   
 })
 

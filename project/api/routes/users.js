@@ -112,11 +112,25 @@ users.post('/usernames', authHandler, jsonBodyParser, withErrorHandling((req, re
          .then(usernames => res.json({ usernames })) 
 }))
 
+// GET /users/all  → devuelve id y username de todos
+// GET /users/all  → devuelve id, username, name y surname de todos
+users.get('/all', authHandler, withErrorHandling(async (req, res) => {
+  const rawUsers = await User.find({}, 'username name surname _id').lean()
+  const users = rawUsers.map(u => ({
+    id: u._id.toString(),
+    username: u.username,
+    name: u.name,
+    surname: u.surname
+  }))
+  res.json({ users })
+}))
+
 // Obtener info básica de un usuario por ID
 users.get('/:id', authHandler, withErrorHandling((req, res) => {
   const { id } = req.params
-  
+
   return logic.getUserById(id)// SEPARAR EN LOGICA
     .then( foundUser => res.json(foundUser) )
 }))
+
 

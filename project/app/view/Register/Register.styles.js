@@ -44,7 +44,23 @@ const styles = StyleSheet.create({
   link: {
     color: '#f4e04d',
     marginTop: 20,
-    textAlign: 'center'
+    textAlign: 'center',
+    textShadowColor: '#000',              // borde negro
+      textShadowOffset: { width: 0.5, height: 0.5 },
+      textShadowRadius: 1
+  },
+  buttonDisabled: {
+    opacity: 0.5
+  },
+  hint: {
+    fontSize: 12,
+    color: '#f4e04d',
+    marginTop: -12,
+    marginBottom: 8,
+    marginLeft: 8,
+    textShadowColor: '#000',              // borde negro
+      textShadowOffset: { width: 0.5, height: 0.5 },
+      textShadowRadius: 1
   }
 })
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, TextInput, Platform, Alert } from 'react-native'
+import { View, Text, TextInput, Platform, Alert, FlatList, TouchableOpacity } from 'react-native'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import styles from './CreateGame.styles.js'
 import { logic } from '../../logic'
@@ -13,8 +13,13 @@ export default function CreateGameScreen({ navigation }) {
   const [showDatePicker, setShowDatePicker] = useState(false)
   const [modalVisible, setModalVisible] = useState(false)
   const [seasonOptions, setSeasonOptions] = useState([])
+  const [participants, setParticipants] = useState([])
+  const [allUsers, setAllUsers] = useState([])
 
   useEffect(() => {
+      logic.getAllUsers()
+        .then(setAllUsers)
+        .catch(() => Alert.alert('Error loading users'))
     logic.getLatestSeason()
       .then(season => {
         const options = season ? [
@@ -52,11 +57,11 @@ export default function CreateGameScreen({ navigation }) {
       Alert.alert('Missing data', 'Please fill in all fields before creating a game.')
       return
     }
-  
+
     try {
       const isoDate = new Date(date).toISOString()
-  
-      logic.createGame(title, season, place, isoDate)
+
+      logic.createGame(title, season, place, isoDate, participants)
         .then(() => {
           Alert.alert('✅ Game created successfully 🎉')
           navigation.navigate('Home')
@@ -69,7 +74,7 @@ export default function CreateGameScreen({ navigation }) {
       console.error('❗ Error preparing game:', error)
       Alert.alert('Unexpected error ❌', error.message || 'Something went wrong.')
     }
-  }  
+  }
 
   const handleDateChange = (event, selectedDate) => {
     const currentDate = selectedDate || date
@@ -137,6 +142,31 @@ export default function CreateGameScreen({ navigation }) {
 
           )}
         </View>
+        <Text style={styles.subtitle}>Select Participants</Text>
+        <FlatList
+          data={allUsers}
+          keyExtractor={item => item.id}
+          style={styles.userList}
+          renderItem={({ item }) => {
+            const isSelected = participants.includes(item.id)
+            return (
+              <TouchableOpacity
+                onPress={() => {
+                  if (isSelected) {
+                    setParticipants(participants.filter(id => id !== item.id))
+                  } else {
+                    setParticipants([...participants, item.id])
+                  }
+                }}
+                style={[styles.userItem, isSelected && styles.userItemSelected]}
+              >
+                <Text style={styles.userText}>
+                  {item.username} ({item.name} {item.surname})
+                </Text>
+              </TouchableOpacity>
+            )
+          }}
+        />
 
         <PokerButton title="Create Game" onPress={handleCreateGame} />
 

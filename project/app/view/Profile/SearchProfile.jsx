@@ -8,8 +8,8 @@ import styles from './searchProfile.styles.js'
 export default function SearchProfile() {
   const navigation = useNavigation()
   const [query, setQuery] = useState('')
-  const [suggestions, setSuggestions] = useState([])
-  
+  const [allUsers, setAllUsers] = useState([])
+
   useEffect(() => {
     navigation.setOptions(
       PokerHeader({
@@ -20,39 +20,36 @@ export default function SearchProfile() {
   }, [])
 
   useEffect(() => {
-    if (!query.trim()) {
-      setSuggestions([])
-      return
-    }
-    navigation.setOptions(
-      PokerHeader({
-        
-        leftText: 'Search Users...'
-      })
-    )
-    const timeout = setTimeout(() => {
-      logic.searchUsers(query)
-        .then(setSuggestions)
-      
-    }, 300)
-
-    return () => clearTimeout(timeout)
-  }, [query])
-
-    const handleLogoutClick = () => {
-      try {
-        logic.logoutUser()
-        navigation.navigate('Login')
-        Alert.alert('Bye, See You soon!!')
-      } catch (error) {
+    logic.getAllUsers()
+      .then(users => setAllUsers(users))  // ← Esto es válido solo si la función ya hace `return users`
+      .catch(error => {
         console.error(error)
-        Alert.alert(`Error ❌\n${error.message}`)
-      }
+        Alert.alert('Error ❌', 'Failed to load users')
+      })
+  }, [])
+
+  const filteredSuggestions = query.trim()
+    ? allUsers.filter(user => {
+        const fullName = `${user.name} ${user.surname}`.toLowerCase()
+        const username = user.username.toLowerCase()
+        const q = query.trim().toLowerCase()
+        return username.includes(q) || fullName.includes(q)
+      })
+    : allUsers
+
+  const handleLogoutClick = () => {
+    try {
+      logic.logoutUser()
+      navigation.navigate('Login')
+      Alert.alert('Bye, See You soon!!')
+    } catch (error) {
+      console.error(error)
+      Alert.alert(`Error ❌\n${error.message}`)
     }
+  }
 
   const handleSelectUser = (user) => {
     setQuery('')
-    setSuggestions([])
     navigation.navigate('UserProfile', { username: user.username, userId: user.id })
   }
 
@@ -63,7 +60,7 @@ export default function SearchProfile() {
       <View style={styles.searchRow}>
         <TextInput
           style={styles.input}
-          placeholder='Search users... '
+          placeholder='Search users...'
           placeholderTextColor="#aaa"
           value={query}
           onChangeText={setQuery}
@@ -72,11 +69,14 @@ export default function SearchProfile() {
       </View>
 
       <FlatList
-        data={suggestions}
+        data={filteredSuggestions}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <TouchableOpacity onPress={() => handleSelectUser(item)} style={styles.suggestionItem}>
-            <Text style={styles.suggestionText}>{item.username}</Text>
+            <View style={styles.userRow}>
+              <Text style={styles.suggestionText}>{item.username}</Text>
+              <Text style={styles.subText}> — {item.name} {item.surname}</Text>
+            </View>
           </TouchableOpacity>
         )}
       />

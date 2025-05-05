@@ -223,7 +223,7 @@ const handleFinishSeason = () => {
         />
       )}
 
-      {season && <Text style={{ fontSize: 16, marginBottom: 10 }}>Season: {season.name}</Text>}
+      {season && <Text style={{ fontSize: 16, marginBottom: 10, color: '#f4e04d' }}>Season: {season.name}</Text>}
 
       {season && renderHeader()}
 
