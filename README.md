@@ -4,7 +4,7 @@
 
 PokApp is a social application designed to help you organize and follow poker games results with your friends. Users can create game events, join or leave games and compete within seasons. Each season maintains a points-based leaderboard. Users can also view their personal profile, which includes detailed statistics such as games played, games won, winning percentage and historical performance across all seasons. Administrators can manage the seasons and set the winners, keeping the competition more controlled.
 
-![Logo de PokApp](.././app/assets/PokApp1.png)
+![Logo de PokApp](./project/app/assets/PokApp1.png)
 
 ## Functional
 
@@ -106,7 +106,7 @@ Season
 - Test the code
 
 
-![code coverage](.././app/assets/coverage.jpg)
+![code coverage](./project/app/assets/coverage.jpg)
 
 ## Planning
 
