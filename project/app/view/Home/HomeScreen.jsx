@@ -218,7 +218,22 @@ const Home = ({ navigation }) => {
                   title={isParticipant ? 'Cancel' : 'Participate'}
                   onPress={() => {
                     logic.toggleParticipation(item._id)
-                      .then(() => logic.getGames().then(({ games }) => setGames(games)))
+                      .then(() => logic.getGames())
+                      .then(({ games: updatedGames }) => {
+                        // Solo actualizamos la partida correspondiente
+                        setGames(prevGames =>
+                          prevGames.map(g =>
+                            g._id === item._id ? updatedGames.find(u => u._id === g._id) || g : g
+                          )
+                        )
+                        const allParticipantIds = [...new Set(updatedGames.flatMap(g => g.participants))]
+                        return logic.getUsernamesByIds(allParticipantIds)
+                      })
+                      .then(userArray => {
+                        const map = {}
+                        userArray.forEach(({ id, username }) => map[id] = username)
+                        setUserMap(map)
+                      })
                       .catch(error => Alert.alert('Error ❌', error.message))
                   }}
                  /> 
