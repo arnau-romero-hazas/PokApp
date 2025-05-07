@@ -21,6 +21,8 @@ export const setGameWinner = (adminId, gameId, winnerId) => {
       if (!game) throw new NotFoundError('Game not found')
       if (!user) throw new NotFoundError('User not found')
 
+      const winnerIdStr = user._id.toString()
+
       if (!game.participants.toString().includes(user._id.toString())) {
         throw new ValidationError('Winner must be one of the participants')
       }
@@ -29,7 +31,9 @@ export const setGameWinner = (adminId, gameId, winnerId) => {
         .then(participants => {
           let points = 0
           participants.forEach(p => {
-            points += p.role === 'admin' ? 1 : 0.5
+             if (p._id.toString() !== winnerIdStr) {
+                          points += p.role === 'admin' ? 1 : 0.5
+                        }
           })
           
           game.winner = user._id
