@@ -35,11 +35,7 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 
-<<<<<<< HEAD
-#Package json
-package-lock.json
-package.json
-=======
+
 /package-lock.json
 /package.json
->>>>>>> 52b9ef6989770ad1a027149d140562f628205e42
+
