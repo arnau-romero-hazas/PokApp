@@ -40,9 +40,7 @@ export default {
       bundler: 'metro'
     },
     extra: {
-      apiBaseUrl: process.env.API_BASE_URL?.includes('localhost')
-        ? process.env.API_BASE_URL.replace('localhost', getLocalIp()) 
-        : process.env.API_BASE_URL
+      apiBaseUrl: 'https://pokapp-2vie.onrender.com/'
     }
   }
 }
