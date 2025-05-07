@@ -31,7 +31,7 @@ export const setGameWinner = (adminId, gameId, winnerId) => {
           participants.forEach(p => {
             points += p.role === 'admin' ? 1 : 0.5
           })
-
+          
           game.winner = user._id
           game.points = points
           game.status = 'finished'
