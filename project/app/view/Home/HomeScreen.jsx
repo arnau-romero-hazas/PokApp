@@ -3,7 +3,6 @@ import { View, Text, FlatList, Alert, ActivityIndicator} from 'react-native'
 
 import styles from './Home.styles.js'
 import { logic } from '../../logic/index.js'
-
 import { CustomModal, NavBar, PokerButton, PokerHeader, PokerBackground} from '../../components/index.js'
 
 const Home = ({ navigation }) => {

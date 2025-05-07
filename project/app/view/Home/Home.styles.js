@@ -61,6 +61,16 @@ const styles = StyleSheet.create({
   flexButton: {
     flex: 1,
     minWidth: '45%' // se adaptan como columnas incluso en pantallas pequeñas
+  },
+  link: {
+    color: '#f4e04d',
+    marginTop: 20,
+    textAlign: 'center',
+    textShadowColor: '#000',
+    textShadowOffset: { width: 0.5, height: 0.5 },
+    textShadowRadius: 1,
+    fontSize: 16,
+    textDecorationLine: 'underline'
   }
   
 })

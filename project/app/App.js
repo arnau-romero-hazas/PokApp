@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 
 import Home from './view/Home/HomeScreen'
+import Rules from './view/Profile/Rules'
 import Login from './view/Login/LoginScreen'
 import Register from './view/Register/RegisterScreen'
 import ProfileScreen from './view/Profile/ProfileScreen'
@@ -23,6 +24,7 @@ export default function App() {
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Register" component={Register} />
         <Stack.Screen name="Home" component={Home} options={{ headerLeft: () => null }} />
+        <Stack.Screen name="Rules" component={Rules} options={{ headerLeft: () => null }} />
         <Stack.Screen name="Profile" component={ProfileScreen} options={{ headerLeft: () => null }} />
         <Stack.Screen name="SearchProfile" component={SearchProfile} options={{ headerLeft: () => null }} />
         <Stack.Screen name="UserProfile" component={UserProfileScreen} options={{ headerLeft: () => null }} />

@@ -92,6 +92,16 @@ const styles = StyleSheet.create({
     textShadowColor: '#000',
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 1
+  },
+  rulesLinkTopLeft: {
+      position: 'absolute',
+      top: 10,
+      left: 10,
+      zIndex: 10,
+      color: '#ffd700',
+      textShadowColor: '#000',
+      textShadowOffset: { width: 0.5, height: 0.5 },
+      textShadowRadius: 1
   }
   
 })

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, Alert, ActivityIndicator, ScrollView } from 'react-native'
+import {View, Text, Alert, ActivityIndicator, ScrollView } from 'react-native'
 import { logic } from '../../logic'
 import styles from './Profile.styles.js'
 import { CustomModal, NavBar, PokerBackground, PokerHeader, PokerButton } from '../../components/index.js' 
@@ -93,6 +93,13 @@ export default function ProfileScreen({ navigation }) {
   return (
     <PokerBackground>
       <ScrollView contentContainerStyle={styles.container}>
+          <Text
+            style={styles.rulesLinkTopLeft}
+            onPress={() => navigation.navigate('Rules')}
+          >
+            📜 <Text style={{ textDecorationLine: 'underline' }}>RULES</Text>
+          </Text>
+
         <View style={styles.container}>
           <Text style={styles.title}>Profile</Text>
           <Text style={styles.roleText}>Current role: {userRole}</Text>
