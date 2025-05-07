@@ -40,7 +40,9 @@ export default {
       bundler: 'metro'
     },
     extra: {
-      apiBaseUrl: 'https://pokapp-2vie.onrender.com/'
+
+      apiBaseUrl: 'https://pokapp-2vie.onrender.com'
+
     }
   }
 }
