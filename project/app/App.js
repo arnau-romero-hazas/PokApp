@@ -8,6 +8,7 @@ import Rules from './view/Profile/Rules'
 import Login from './view/Login/LoginScreen'
 import Register from './view/Register/RegisterScreen'
 import ProfileScreen from './view/Profile/ProfileScreen'
+import EditProfile from './view/Profile/EditProfile'
 import SearchProfile from './view/Profile/SearchProfile'
 import UserProfileScreen from './view/Profile/UserProfileScreen'
 import CreateGameScreen from './view/CreateGame/CreateGameScreen'
@@ -26,6 +27,7 @@ export default function App() {
         <Stack.Screen name="Home" component={Home} options={{ headerLeft: () => null }} />
         <Stack.Screen name="Rules" component={Rules} options={{ headerLeft: () => null }} />
         <Stack.Screen name="Profile" component={ProfileScreen} options={{ headerLeft: () => null }} />
+        <Stack.Screen name="EditProfile" component={EditProfile} options={{ headerLeft: () => null }} />
         <Stack.Screen name="SearchProfile" component={SearchProfile} options={{ headerLeft: () => null }} />
         <Stack.Screen name="UserProfile" component={UserProfileScreen} options={{ headerLeft: () => null }} />
         <Stack.Screen name="CreateGame" component={CreateGameScreen} options={{ headerLeft: () => null }} />

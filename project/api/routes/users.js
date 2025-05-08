@@ -148,5 +148,12 @@ users.post('/roles-by-ids', authHandler, jsonBodyParser, withErrorHandling(async
   res.json(roles)
 }))
 
+users.patch('/profile', authHandler, jsonBodyParser, withErrorHandling((req, res) => {
+  const { userId } = req
+  const { name, surname, email, username, currentPassword, newPassword } = req.body
+
+  return logic.updateUserProfile(userId, { name, surname, email, username, currentPassword, newPassword })
+    .then(() => res.status(204).send())
+}))
 
 
