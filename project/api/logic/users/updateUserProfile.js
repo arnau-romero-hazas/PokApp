@@ -1,5 +1,5 @@
 import { User } from '../../data/index.js'
-import { errors, validate } from '../../validations'
+import { errors, validate } from '../../validations/index.js'
 import bcrypt from 'bcryptjs'
 
 const { NotFoundError, ValidationError, NotAllowedError, DuplicityError } = errors
