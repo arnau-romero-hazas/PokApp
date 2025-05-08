@@ -15,27 +15,51 @@ const Home = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false)
   const [selectedGame, setSelectedGame] = useState(null)
   const [userMap, setUserMap] = useState({})
+  const refreshGamesWithPoints = async (currentUserId) => {
+    const { games } = await logic.getGames()
+
+    const calculatePoints = (game) => {
+      return logic.getUserRolesByIds(game.participants)
+        .then(users =>
+          users.reduce((acc, user) => {
+            if (user.id !== currentUserId)
+              acc += user.role === 'admin' ? 1 : 0.5
+            return acc
+          }, 0)
+        )
+    }
+
+    const gamesWithPoints = await Promise.all(
+      games.map(async game => ({
+        ...game,
+        estimatedPoints: await calculatePoints(game)
+      }))
+    )
+
+    setGames(gamesWithPoints)
+
+    const allParticipantIds = [...new Set(games.flatMap(g => g.participants))]
+    const usernamesMap = await logic.getUsernamesByIds(allParticipantIds)
+    const map = {}
+    usernamesMap.forEach(({ id, username }) => (map[id] = username))
+    setUserMap(map)
+  }
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [username, userId, role, { games }] = await Promise.all([
+        const [username, userId, role] = await Promise.all([
           logic.getUsername(),
           logic.getUserId(),
-          logic.getUserRole(),
-          logic.getGames()
+          logic.getUserRole()
         ])
-  
+
         setUsername(username)
         setUserId(userId)
         setUserRole(role)
-        setGames(games)
-  
-        const allParticipantIds = [...new Set(games.flatMap(g => g.participants))]
-        const usernamesMap = await logic.getUsernamesByIds(allParticipantIds)
-        const map = {}
-        usernamesMap.forEach(({ id, username }) => map[id] = username)
-        setUserMap(map)
-  
+
+        await refreshGamesWithPoints(userId)
+
         navigation.setOptions(
           PokerHeader({
             username,
@@ -168,6 +192,16 @@ const Home = ({ navigation }) => {
     )
   }
 
+  const estimatedPoints = game => {
+    return logic.getUserRolesByIds(game.participants)
+      .then(users => {
+        return users.reduce((sum, u) => {
+          if (u.id !== userId) sum += u.role === 'admin' ? 1 : 0.5
+          return sum
+        }, 0)
+      })
+  }
+
   return (
     <PokerBackground>
       <FlatList
@@ -187,7 +221,9 @@ const Home = ({ navigation }) => {
             >
               <Text style={styles.gameTitle}>{item.title}</Text>
               <Text style={styles.gameDate}>{new Date(item.date).toLocaleString()}</Text>
-
+              <Text style={{ color: '#0a3d24', fontWeight: 'bold' }}>
+                🪙 Winner earns: {item.estimatedPoints} points
+              </Text>
               <View style={{ marginTop: 10 }}>
               <Text style={{ fontWeight: 'bold' }}>Participants:</Text>
               {item.participants.length === 0 ? (
@@ -216,26 +252,11 @@ const Home = ({ navigation }) => {
                 <PokerButton
                   title={isParticipant ? 'Cancel' : 'Participate'}
                   onPress={() => {
-                    logic.toggleParticipation(item._id)
-                      .then(() => logic.getGames())
-                      .then(({ games: updatedGames }) => {
-                        // Solo actualizamos la partida correspondiente
-                        setGames(prevGames =>
-                          prevGames.map(g =>
-                            g._id === item._id ? updatedGames.find(u => u._id === g._id) || g : g
-                          )
-                        )
-                        const allParticipantIds = [...new Set(updatedGames.flatMap(g => g.participants))]
-                        return logic.getUsernamesByIds(allParticipantIds)
-                      })
-                      .then(userArray => {
-                        const map = {}
-                        userArray.forEach(({ id, username }) => map[id] = username)
-                        setUserMap(map)
-                      })
-                      .catch(error => Alert.alert('Error ❌', error.message))
-                  }}
-                 /> 
+                      logic.toggleParticipation(item._id)
+                        .then(() => refreshGamesWithPoints(userId))
+                        .catch(error => Alert.alert('Error ❌', error.message))
+                    }}
+                    />
                 )}
                 {userRole === 'admin' && item.status === 'scheduled' && (
                   <>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import {View, Text, Alert, ActivityIndicator, ScrollView } from 'react-native'
 import { logic } from '../../logic'
 import styles from './Profile.styles.js'
-import { CustomModal, NavBar, PokerBackground, PokerHeader, PokerButton } from '../../components/index.js' 
+import { CustomModal, NavBar, PokerBackground, PokerHeader, PokerButton } from '../../components/index.js'
 
 export default function ProfileScreen({ navigation }) {
   const [username, setUsername] = useState('')
@@ -106,7 +106,10 @@ export default function ProfileScreen({ navigation }) {
           {userRole !== 'admin' && (
             <PokerButton title='Request Admin Role' onPress={handleRequestAdminRole} />
           )}
-  
+            <PokerButton
+              title="Edit Profile"
+              onPress={() => navigation.navigate('EditProfile')}
+            />
           <View style={styles.statsContainer}>
             <Text style={styles.sectionTitle}>Stats (Current Season)</Text>
   
