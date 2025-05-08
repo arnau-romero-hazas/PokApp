@@ -227,7 +227,7 @@ const Home = ({ navigation }) => {
                 </Text>
               )}
               <Text style={{ color: '#0a3d24', fontWeight: 'bold' }}>
-                🪙 Winner earns: {item.estimatedPoints} points
+                🪙 If you win you earn: {item.estimatedPoints} points
               </Text>
               <View style={{ marginTop: 10 }}>
               <Text style={{ fontWeight: 'bold' }}>Participants:</Text>

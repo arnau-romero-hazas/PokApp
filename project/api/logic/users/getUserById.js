@@ -11,7 +11,13 @@ export const getUserById = (id) => {
         .then(user => {
             if (!user) throw new NotFoundError('User not found')
             
-            const foundUser = { id: user._id.toString(), username: user.username }
+            const foundUser = {
+              id: user._id.toString(),
+              username: user.username,
+              name: user.name,
+              surname: user.surname,
+              email: user.email
+            }
            
             return foundUser 
           })

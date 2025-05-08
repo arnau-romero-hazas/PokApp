@@ -18,15 +18,20 @@ const EditProfile = ({ navigation }) => {
       try {
         navigation.setOptions({ headerShown: false })
 
-        const userId = await logic.getUserId()
-        const user = await logic.getUserById(userId)
+        const [userId, allUsers] = await Promise.all([
+          logic.getUserId(),
+          logic.getAllUsers()
+        ])
 
-        console.log('Fetched user:', user)
+        const user = allUsers.find(user => user.id === userId)
+        const userDetails = await logic.getUserById(userId)
+
+        if (!user || !userDetails) throw new Error('User not found')
 
         setName(user.name ?? '')
         setSurname(user.surname ?? '')
-        setEmail(user.email ?? '')
-        setUsername(user.username ?? '')
+        setEmail(userDetails.email ?? '')
+        setUsername(userDetails.username ?? '')
       } catch (error) {
         Alert.alert('Error loading profile', error.message)
       }
@@ -34,6 +39,7 @@ const EditProfile = ({ navigation }) => {
 
     fetchUserData()
   }, [])
+
 
 
 
@@ -77,20 +83,12 @@ const EditProfile = ({ navigation }) => {
       <View style={styles.container}>
         <Text style={styles.title}>Edit Profile</Text>
 
-        <TextInput
-          value={name}
-          onChangeText={setName}
-          placeholder="Your name..."
-          placeholderTextColor="#444"
-          style={styles.input}
-        />
-        <TextInput
-          value={surname}
-          onChangeText={setSurname}
-          placeholder="Your surname..."
-          placeholderTextColor="#444"
-          style={styles.input}
-        />
+        <Text style={styles.section}>Name</Text>
+        <Text style={styles.readonly}>{name}</Text>
+
+        <Text style={styles.section}>Surname</Text>
+        <Text style={styles.readonly}>{surname}</Text>
+        <Text style={styles.section}>Email</Text>
         <TextInput
           value={email}
           onChangeText={setEmail}
@@ -99,6 +97,7 @@ const EditProfile = ({ navigation }) => {
           placeholderTextColor="#444"
           style={styles.input}
         />
+        <Text style={styles.section}>Username</Text>
         <TextInput
           value={username}
           onChangeText={setUsername}

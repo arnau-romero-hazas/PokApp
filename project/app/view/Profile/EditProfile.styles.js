@@ -50,6 +50,16 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
     fontSize: 16
+  },
+  readonly: {
+    fontSize: 16,
+    color: '#fff',
+    marginBottom: 16,
+    backgroundColor: 'rgba(255,255,255,0.1)',
+    padding: 12,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#f4e04d'
   }
 })
 
