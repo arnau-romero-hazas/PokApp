@@ -16,8 +16,10 @@ const EditProfile = ({ navigation }) => {
   useEffect(() => {
     navigation.setOptions({ headerShown: false })
 
-    logic.getUserById(logic.getUserId())
-      .then(user => {
+    return logic.getUserId()
+    .catch(error => Alert.alert('Error loading profile', error.message))
+    .then(id => logic.getUserById(id))
+    .then(user => {
         setName(user.name)
         setSurname(user.surname)
         setEmail(user.email)
