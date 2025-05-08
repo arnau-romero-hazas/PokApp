@@ -221,6 +221,11 @@ const Home = ({ navigation }) => {
             >
               <Text style={styles.gameTitle}>{item.title}</Text>
               <Text style={styles.gameDate}>{new Date(item.date).toLocaleString()}</Text>
+              {item.place && (
+                <Text style={{ color: '#0a3d24', fontWeight: 'bold', marginBottom: 4 }}>
+                  📍 {item.place}
+                </Text>
+              )}
               <Text style={{ color: '#0a3d24', fontWeight: 'bold' }}>
                 🪙 Winner earns: {item.estimatedPoints} points
               </Text>
