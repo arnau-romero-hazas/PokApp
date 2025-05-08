@@ -1,4 +1,4 @@
-import { API_BASE_URL } from '../config.js'
+const API_BASE_URL = process.env.API_BASE_URL
 
 export const getUserRolesByIds = (ids) => {
   return fetch(`${API_BASE_URL}/users/roles-by-ids`, {
@@ -11,3 +11,4 @@ export const getUserRolesByIds = (ids) => {
       return res.json()
     })
 }
+
