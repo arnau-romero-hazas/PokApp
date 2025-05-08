@@ -28,9 +28,31 @@ const Home = ({ navigation }) => {
         setUsername(username)
         setUserId(userId)
         setUserRole(role)
-        setGames(games)
+        //setGames(games)
   
+        //const allParticipantIds = [...new Set(games.flatMap(g => g.participants))]
+        const calculatePoints = (game, currentUserId) => {
+          return logic.getUserRolesByIds(game.participants)
+            .then(users =>
+              users.reduce((acc, user) => {
+                if (user.id !== currentUserId)
+                  acc += user.role === 'admin' ? 1 : 0.5
+                return acc
+              }, 0)
+            )
+        }
+
+        const gamesWithPoints = await Promise.all(
+          games.map(async game => ({
+            ...game,
+            estimatedPoints: await calculatePoints(game, userId)
+          }))
+        )
+
+        setGames(gamesWithPoints)
+
         const allParticipantIds = [...new Set(games.flatMap(g => g.participants))]
+
         const usernamesMap = await logic.getUsernamesByIds(allParticipantIds)
         const map = {}
         usernamesMap.forEach(({ id, username }) => map[id] = username)
@@ -168,6 +190,16 @@ const Home = ({ navigation }) => {
     )
   }
 
+  const estimatedPoints = game => {
+    return logic.getUserRolesByIds(game.participants)
+      .then(users => {
+        return users.reduce((sum, u) => {
+          if (u.id !== userId) sum += u.role === 'admin' ? 1 : 0.5
+          return sum
+        }, 0)
+      })
+  }
+
   return (
     <PokerBackground>
       <FlatList
@@ -187,7 +219,9 @@ const Home = ({ navigation }) => {
             >
               <Text style={styles.gameTitle}>{item.title}</Text>
               <Text style={styles.gameDate}>{new Date(item.date).toLocaleString()}</Text>
-
+              <Text style={{ color: '#0a3d24', fontWeight: 'bold' }}>
+                🪙 Winner earns: {item.estimatedPoints} points
+              </Text>
               <View style={{ marginTop: 10 }}>
               <Text style={{ fontWeight: 'bold' }}>Participants:</Text>
               {item.participants.length === 0 ? (

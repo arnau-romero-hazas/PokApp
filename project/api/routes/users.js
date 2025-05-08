@@ -133,4 +133,20 @@ users.get('/:id', authHandler, withErrorHandling((req, res) => {
     .then( foundUser => res.json(foundUser) )
 }))
 
+// Obtener los roles de múltiples usuarios por sus IDs
+users.post('/roles-by-ids', authHandler, jsonBodyParser, withErrorHandling(async (req, res) => {
+  const { ids } = req.body
+
+  if (!Array.isArray(ids)) return res.status(400).json({ error: 'ids must be an array' })
+
+  const users = await User.find({ _id: { $in: ids } }).select('id role').lean()
+  const roles = users.map(user => ({
+    id: user._id.toString(),
+    role: user.role
+  }))
+
+  res.json(roles)
+}))
+
+
 
