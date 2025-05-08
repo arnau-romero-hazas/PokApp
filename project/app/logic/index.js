@@ -14,6 +14,8 @@ import { searchUsers } from './users/searchUsers.js'
 import { getUserStatsById } from './users/getUserStatsById.js'
 import { getUserHistoricStatsById } from './users/getUserHistoricStatsById.js'
 import { getAllUsers } from './users/getAllUsers.js'
+import { getUserRolesByIds } from './users/getUserRolesByIds.js'
+
 
 import { createGame } from "./games/createGame.js"
 import { getGames } from "./games/getGames.js"
@@ -46,6 +48,7 @@ export const logic = {
     getUserHistoricStatsById,
     getUserStatsById,
     getAllUsers,
+    getUserRolesByIds,
 
     createGame,
     getGames,
