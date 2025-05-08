@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, TextInput, Alert, TouchableOpacity } from 'react-native'
+import { View, Text, TextInput, Alert, TouchableOpacity, ScrollView } from 'react-native'
 import { logic } from '../../logic'
 import styles from './EditProfile.styles'
-import { PokerBackground } from '../../components/index.js'
+import { NavBar, PokerBackground, PokerHeader } from '../../components/index.js'
 import { validate } from '../../validations'
 
 const EditProfile = ({ navigation }) => {
@@ -16,12 +16,20 @@ const EditProfile = ({ navigation }) => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        navigation.setOptions({ headerShown: false })
-
-        const [userId, allUsers] = await Promise.all([
+        const [userId, allUsers, username] = await Promise.all([
           logic.getUserId(),
-          logic.getAllUsers()
+          logic.getAllUsers(),
+          logic.getUsername()
         ])
+
+        navigation.setOptions(
+          PokerHeader({
+            username,
+            leftText: 'EDIT PROFILE',
+            onLogoutPress: handleLogoutClick,
+            onUserPress: () => navigation.navigate('Profile')
+          })
+        )
 
         const user = allUsers.find(user => user.id === userId)
         const userDetails = await logic.getUserById(userId)
@@ -40,8 +48,11 @@ const EditProfile = ({ navigation }) => {
     fetchUserData()
   }, [])
 
-
-
+  const handleLogoutClick = () => {
+    logic.logoutUser()
+    navigation.navigate('Login')
+    Alert.alert('Bye, see you soon!')
+  }
 
   const handleSaveChanges = async () => {
     try {
@@ -80,7 +91,7 @@ const EditProfile = ({ navigation }) => {
 
   return (
     <PokerBackground>
-      <View style={styles.container}>
+      <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.title}>Edit Profile</Text>
 
         <Text style={styles.section}>Name</Text>
@@ -128,7 +139,9 @@ const EditProfile = ({ navigation }) => {
         <TouchableOpacity style={styles.button} onPress={handleSaveChanges}>
           <Text style={styles.buttonText}>SAVE CHANGES</Text>
         </TouchableOpacity>
-      </View>
+      <View style={{ height: 80 }} />
+            </ScrollView>
+      <NavBar navigation={navigation} />
     </PokerBackground>
   )
 }

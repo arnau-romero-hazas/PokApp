@@ -54,7 +54,7 @@ export const validate = {
     title(title, explain = 'title') {
         this.text(title, explain)
         this.minLength(title, 1, explain)
-        this.maxLength(title, 15, explain)
+        this.maxLength(title, 40, explain)
     },
     season(season, explain = 'season') {
         this.text(season, explain)
