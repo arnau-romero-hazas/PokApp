@@ -14,45 +14,55 @@ const EditProfile = ({ navigation }) => {
   const [newPassword, setNewPassword] = useState('')
 
   useEffect(() => {
-    navigation.setOptions({ headerShown: false })
+    const fetchUserData = async () => {
+      try {
+        navigation.setOptions({ headerShown: false })
 
-    return logic.getUserId()
-    .catch(error => Alert.alert('Error loading profile', error.message))
-    .then(id => logic.getUserById(id))
-    .then(user => {
-        setName(user.name)
-        setSurname(user.surname)
-        setEmail(user.email)
-        setUsername(user.username)
-      })
-      .catch(error => Alert.alert('Error loading profile', error.message))
+        const userId = await logic.getUserId()
+        const user = await logic.getUserById(userId)
+
+        console.log('Fetched user:', user)
+
+        setName(user.name ?? '')
+        setSurname(user.surname ?? '')
+        setEmail(user.email ?? '')
+        setUsername(user.username ?? '')
+      } catch (error) {
+        Alert.alert('Error loading profile', error.message)
+      }
+    }
+
+    fetchUserData()
   }, [])
+
+
 
   const handleSaveChanges = async () => {
     try {
-      if (!name.trim()) throw new Error('Please enter your name.')
-      if (!surname.trim()) throw new Error('Please enter your surname.')
-      if (!email.trim()) throw new Error('Please enter your email.')
-      if (!username.trim()) throw new Error('Please enter a username.')
+      const data = {}
+      if (!`${name}`.trim()) throw new Error('Please enter your name.')
+      if (!`${surname}`.trim()) throw new Error('Please enter your surname.')
+      if (!`${email}`.trim()) throw new Error('Please enter your email.')
+      if (!`${username}`.trim()) throw new Error('Please enter a username.')
 
       validate.name(name)
       validate.surname(surname)
       validate.email(email)
       validate.username(username)
 
-      if (newPassword) {
-        if (!currentPassword) throw new Error('Please enter your current password.')
+      data.name = name
+      data.surname = surname
+      data.email = email
+      data.username = username
+
+      if (newPassword.trim()) {
+        if (!`${currentPassword}`.trim()) throw new Error('Please enter your current password.')
         validate.password(newPassword)
+        data.currentPassword = currentPassword
+        data.newPassword = newPassword
       }
 
-      await logic.updateUserProfile({
-        name,
-        surname,
-        email,
-        username,
-        currentPassword: currentPassword || undefined,
-        newPassword: newPassword || undefined
-      })
+      await logic.updateUserProfile(data)
 
       Alert.alert('✅ Profile updated successfully!')
       navigation.goBack()
@@ -60,6 +70,7 @@ const EditProfile = ({ navigation }) => {
       Alert.alert('Error ❌', error.message || 'Something went wrong')
     }
   }
+
 
   return (
     <PokerBackground>

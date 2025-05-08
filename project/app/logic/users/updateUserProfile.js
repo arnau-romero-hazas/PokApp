@@ -24,12 +24,24 @@ export const updateUserProfile = async ({ name, surname, email, username, curren
     body: JSON.stringify({ name, surname, email, username, currentPassword, newPassword })
   })
     .then(res => {
+      if (res.status === 204) return // No hay nada que parsear
       if (res.status === 200) return res.json()
 
-      return res.json().then(body => {
+      return res.text().then(text => {
+        if (!text) throw new SystemError('Empty response from server')
+
+        let body
+        try {
+          body = JSON.parse(text)
+        } catch {
+          throw new SystemError('Invalid JSON from server')
+        }
+
         const { error, message } = body
-        const Constructor = errors[error] || SystemError
+        const Constructor = error && typeof errors[error] === 'function' ? errors[error] : SystemError
         throw new Constructor(message || 'Could not update profile')
       })
+
+
     })
 }
