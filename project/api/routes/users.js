@@ -61,7 +61,7 @@ users.patch('/guestVIP', authHandler, jsonBodyParser, withErrorHandling((req, re
 
   // Llamar a la lógica para actualizar el rol a admin
   return logic.roleGuestVip(userId, userVipId)
-    .then(() => res.status(201).send())
+    .then(() => res.status(200).send())
     .catch((error) => {
       res.status(400).send(error.message)  // En caso de error, devolvemos el mensaje del error
     })
