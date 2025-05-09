@@ -22,6 +22,7 @@ export const roleGuestVip = (id, userId) => {
         .then(userId => {
             if (!userId) throw new NotFoundError('userId not found')
             if (userId.role === 'guestVIP') throw new NotAllowedError('This user is already guestVIP')
+            if (userId.role === 'admin') throw new NotAllowedError('Change the role of an admin is not allowed.')
 
             // Actualizar rol
             userId.role = 'guestVIP'
