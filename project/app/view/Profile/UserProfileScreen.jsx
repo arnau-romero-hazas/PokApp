@@ -11,6 +11,7 @@ export default function UserProfileScreen({ route, navigation }) {
   const [historicStats, setHistoricStats] = useState(null)
   const [loading, setLoading] = useState(true)
   const [userRole, setUserRole] = useState('')
+  const [userProfileRole, setUserProfileRole] = useState('')
   
   const handleLogoutClick = () => {
     try {
@@ -27,7 +28,11 @@ export default function UserProfileScreen({ route, navigation }) {
     try {
      return logic.roleGuestVip(userId)
       .catch(error =>  Alert.alert(error.message))
-      .then(() => Alert.alert('Role has been updated succesfuly!'))
+      .then(() => logic.getUserRolesByIds(userId))
+      .then(userRole => {
+        setUserProfileRole(userRole)
+        Alert.alert('Role has been updated succesfuly!')
+      })
     } catch (error) {
       console.error(error)
       Alert.alert(`Error ❌\n${error.message}`)
@@ -38,11 +43,13 @@ export default function UserProfileScreen({ route, navigation }) {
     Promise.all([
       logic.getUserStatsById(userId),
       logic.getUserHistoricStatsById(userId),
+      logic.getUserRolesByIds([userId]),
       logic.getUserRole()
     ])
-      .then(([stats, historicStats, userRole]) => {
+      .then(([stats, historicStats, userProfileRole, userRole]) => {
         setStats(stats)
         setHistoricStats(historicStats)
+        setUserProfileRole(userProfileRole)
         setUserRole(userRole)
 
           navigation.setOptions(
@@ -76,6 +83,7 @@ export default function UserProfileScreen({ route, navigation }) {
         <View style={styles.container}>
 
           <View style={styles.statsContainer}>
+            <Text style={styles.roleText}>Current role: {userProfileRole.role}</Text>
             <Text style={styles.sectionTitle}>Stats (Current Season)</Text>
 
               {userRole === 'admin' &&  (
