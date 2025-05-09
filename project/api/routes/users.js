@@ -56,11 +56,11 @@ users.patch('/admin-request', authHandler, jsonBodyParser, withErrorHandling((re
 
   // Endpoint para actualizar el rol a invitadoVIP
 users.patch('/guestVIP', authHandler, jsonBodyParser, withErrorHandling((req, res) => {
-  const { id } = req // id del usuario que esta haciendo el cambio, debe ser admin
-  const { userId } = req.body  // Recibimos el id del usuario a cambiar rol por el body
+  const { userId } = req // id del usuario que esta haciendo el cambio, debe ser admin
+  const { userVipId } = req.body  // Recibimos el id del usuario a cambiar rol por el body
 
   // Llamar a la lógica para actualizar el rol a admin
-  return logic.roleGuestVip(id, userId)
+  return logic.roleGuestVip(userId, userVipId)
     .then(() => res.status(201).send())
     .catch((error) => {
       res.status(400).send(error.message)  // En caso de error, devolvemos el mensaje del error

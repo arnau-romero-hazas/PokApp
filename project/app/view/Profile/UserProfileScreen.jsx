@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { View, Text, ActivityIndicator, ScrollView, Alert } from 'react-native'
 import { logic } from '../../logic/index.js'
 import styles from './Profile.styles.js'
-import { NavBar, PokerBackground, PokerHeader } from '../../components/index.js' 
+import { NavBar, PokerBackground, PokerHeader, PokerButton } from '../../components/index.js' 
 
 export default function UserProfileScreen({ route, navigation }) {
   const { username, userId } = route.params
@@ -10,6 +10,7 @@ export default function UserProfileScreen({ route, navigation }) {
   const [stats, setStats] = useState(null)
   const [historicStats, setHistoricStats] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [userRole, setUserRole] = useState('')
   
   const handleLogoutClick = () => {
     try {
@@ -24,7 +25,7 @@ export default function UserProfileScreen({ route, navigation }) {
 
   const handleGuestVip = (userId) => {
     try {
-     return logic.roleGuestVIP(userId)
+     return logic.roleGuestVip(userId)
       .catch(error =>  Alert.alert(error.message))
       .then(() => Alert.alert('Role has been updated succesfuly!'))
     } catch (error) {
@@ -36,11 +37,13 @@ export default function UserProfileScreen({ route, navigation }) {
   useEffect(() => {
     Promise.all([
       logic.getUserStatsById(userId),
-      logic.getUserHistoricStatsById(userId)
+      logic.getUserHistoricStatsById(userId),
+      logic.getUserRole()
     ])
-      .then(([stats, historicStats]) => {
+      .then(([stats, historicStats, userRole]) => {
         setStats(stats)
         setHistoricStats(historicStats)
+        setUserRole(userRole)
 
           navigation.setOptions(
             PokerHeader({

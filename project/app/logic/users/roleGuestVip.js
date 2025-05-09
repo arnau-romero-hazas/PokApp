@@ -6,8 +6,8 @@ const  API_BASE_URL = Constants.expoConfig.extra.apiBaseUrl
 
 const { SystemError, AuthorizationError } = errors
 
-export const roleGuestVip = (userId) => {
-    validate.id(userId)
+export const roleGuestVip = (userVipId) => {
+    validate.id(userVipId)
 
     return data.getToken()
     .catch(error => { throw new SystemError(error.message) })
@@ -21,7 +21,7 @@ export const roleGuestVip = (userId) => {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ userId })
+            body: JSON.stringify({ userVipId })
         })
     })
     .catch(error => { throw new SystemError(error.message) })
