@@ -10,7 +10,7 @@ export default function RulesScreen({ navigation }) {
     logic.getUsername()
       .then(username => {
         navigation.setOptions({
-          headerShown: false // ocultamos el header de navegación para personalizarlo
+           headerShown: false // ocultamos el header de navegación para personalizarlo
         })
       })
   }, [])
