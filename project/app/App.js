@@ -1,4 +1,7 @@
 import 'react-native-gesture-handler'  // Asegúrate de que esté al principio
+import { enableScreens } from 'react-native-screens' // Añadido
+enableScreens()
+
 import { StatusBar } from 'expo-status-bar'
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
@@ -12,6 +15,7 @@ import EditProfile from './view/Profile/EditProfile'
 import SearchProfile from './view/Profile/SearchProfile'
 import UserProfileScreen from './view/Profile/UserProfileScreen'
 import CreateGameScreen from './view/CreateGame/CreateGameScreen'
+import EditGameScreen from './view/CreateGame/EditGame'
 import ClassificationScreen from './view/Classification/ClassificationScreen'
 import ClassificationHistoric from './view/Classification/ClassificationHistoric'
 import ClassificationFinishedSeasons from './view/Classification/ClassificationFinishedSeasons'
@@ -31,6 +35,7 @@ export default function App() {
         <Stack.Screen name="SearchProfile" component={SearchProfile} options={{ headerLeft: () => null }} />
         <Stack.Screen name="UserProfile" component={UserProfileScreen} options={{ headerLeft: () => null }} />
         <Stack.Screen name="CreateGame" component={CreateGameScreen} options={{ headerLeft: () => null }} />
+        <Stack.Screen name="EditGame" component={EditGameScreen} options={{ headerLeft: () => null }} />
         <Stack.Screen name="Classification" component={ClassificationScreen} options={{ headerLeft: () => null }} />
         <Stack.Screen name='ClassificationHistoric' component={ClassificationHistoric} options={{ headerLeft: () => null }} />
         <Stack.Screen name='ClassificationFinishedSeasons' component={ClassificationFinishedSeasons} options={{ headerLeft: () => null }} />

@@ -38,7 +38,15 @@ export const games = Router()
     return logic.setGameWinner(userId, gameId, winnerId)
       .then(() => res.status(204).send())
   }))
-
+  //endpoint para editar juego
+  games.patch('/:gameId', authHandler, jsonBodyParser, withErrorHandling((req, res) => {
+    const { gameId } = req.params
+    const { title, date, place, participants } = req.body
+    const { userId } = req
+  
+    return logic.editGame(userId, gameId, { title, date, place, participants })
+      .then(() => res.status(204).send())
+  }))
 // EndPoint para borrar juego
   games.delete('/:gameId', authHandler, withErrorHandling((req, res) => {
     const { gameId } = req.params

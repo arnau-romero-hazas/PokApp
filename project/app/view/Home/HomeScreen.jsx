@@ -277,6 +277,12 @@ const Home = ({ navigation }) => {
                       color='#a00000'
                       textColor='#fff'
                     />
+                    <PokerButton
+                      title="Edit Game"
+                      onPress={() => navigation.navigate('EditGame', { game: item })}
+                      color="#ffa500"
+                      textColor="#fff"
+                    />
                   </>
                 )}
               </View>

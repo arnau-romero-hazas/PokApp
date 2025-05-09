@@ -14,6 +14,7 @@ import { getGames } from './games/getGames.js'
 import { toggleParticipation } from './games/toggleParticipation.js'
 import { setGameWinner } from './games/setGameWinner.js'
 import { deleteGame } from './games/deleteGame.js'
+import { editGame } from './games/editGame.js'
 
 import { getSeasonLeaderboard } from './season/getSeasonLeaderboard.js'
 import { finishSeason } from './season/finishSeason.js'
@@ -41,6 +42,7 @@ export const logic = {
     toggleParticipation,
     setGameWinner,
     deleteGame,
+    editGame,
 
     getSeasonLeaderboard,
     finishSeason,
