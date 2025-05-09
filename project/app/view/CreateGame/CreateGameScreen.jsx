@@ -15,6 +15,8 @@ export default function CreateGameScreen({ navigation }) {
   const [seasonOptions, setSeasonOptions] = useState([])
   const [participants, setParticipants] = useState([])
   const [allUsers, setAllUsers] = useState([])
+  const [mode, setMode] = useState('date') // 'date' o 'time'
+
 
   useEffect(() => {
       logic.getAllUsers()
@@ -76,11 +78,25 @@ export default function CreateGameScreen({ navigation }) {
     }
   }
 
-  const handleDateChange = (event, selectedDate) => {
-    const currentDate = selectedDate || date
-    setShowDatePicker(Platform.OS === 'ios')
-    setDate(currentDate)
+  const handleDateChange = (event, selectedValue) => {
+    if (selectedValue) {
+      const currentDate = new Date(date)
+      if (mode === 'date') {
+        currentDate.setFullYear(selectedValue.getFullYear())
+        currentDate.setMonth(selectedValue.getMonth())
+        currentDate.setDate(selectedValue.getDate())
+      } else if (mode === 'time') {
+        currentDate.setHours(selectedValue.getHours())
+        currentDate.setMinutes(selectedValue.getMinutes())
+      }
+      setDate(currentDate)
+    }
+    //setShowDatePicker(false)
+    if (Platform.OS !== 'ios') {
+        setShowDatePicker(false)
+      }
   }
+
 
   const handleSeasonSelect = (value) => {
     setSeason(value)
@@ -126,19 +142,23 @@ export default function CreateGameScreen({ navigation }) {
             </>
           ) : (
             <View style={styles.dateContainer}>
-            <PokerButton title="📅 Select Date" onPress={() => setShowDatePicker(true)} />
-            <Text style={styles.dateText}>
-              Selected Date: {date.toLocaleDateString()}
-            </Text>
-            {showDatePicker && (
-              <DateTimePicker
-                value={date}
-                mode="date"
-                display="default"
-                onChange={handleDateChange}
-              />
-            )}
-          </View>
+              <PokerButton title="📅 Select Date" onPress={() => { setMode('date'); setShowDatePicker(true) }} />
+              <PokerButton title="⏰ Select Time" onPress={() => { setMode('time'); setShowDatePicker(true) }} />
+              <Text style={styles.dateText}>
+                Selected: {date.toLocaleDateString()} {date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              </Text>
+
+              {showDatePicker && (
+                <DateTimePicker
+                  value={date}
+                  mode={mode}
+                  display="default"
+                  minuteInterval={15}
+                  onChange={handleDateChange}
+                />
+              )}
+            </View>
+
 
           )}
         </View>

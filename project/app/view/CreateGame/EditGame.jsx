@@ -16,6 +16,7 @@ export default function EditGameScreen({ route, navigation }) {
   const [participants, setParticipants] = useState(game.participants || [])
   const [allUsers, setAllUsers] = useState([])
   const [showDatePicker, setShowDatePicker] = useState(false)
+  const [mode, setMode] = useState('date') // 'date' o 'time'
 
   useEffect(() => {
     logic.getAllUsers()
@@ -65,10 +66,23 @@ export default function EditGameScreen({ route, navigation }) {
       })
   }
 
-  const handleDateChange = (event, selectedDate) => {
-    const currentDate = selectedDate || date
-    setShowDatePicker(Platform.OS === 'ios')
-    setDate(currentDate)
+  const handleDateChange = (event, selectedValue) => {
+    if (selectedValue) {
+      const currentDate = new Date(date)
+      if (mode === 'date') {
+        currentDate.setFullYear(selectedValue.getFullYear())
+        currentDate.setMonth(selectedValue.getMonth())
+        currentDate.setDate(selectedValue.getDate())
+      } else if (mode === 'time') {
+        currentDate.setHours(selectedValue.getHours())
+        currentDate.setMinutes(selectedValue.getMinutes())
+      }
+      setDate(currentDate)
+    }
+
+    if (Platform.OS !== 'ios') {
+      setShowDatePicker(false)
+    }
   }
 
   return (
@@ -90,20 +104,24 @@ export default function EditGameScreen({ route, navigation }) {
           onChangeText={setPlace}
         />
 
-        <View style={styles.input}>
-          <PokerButton title="📅 Select Date" onPress={() => setShowDatePicker(true)} />
+        <View style={styles.dateContainer}>
+          <PokerButton title="📅 Select Date" onPress={() => { setMode('date'); setShowDatePicker(true) }} />
+          <PokerButton title="⏰ Select Time" onPress={() => { setMode('time'); setShowDatePicker(true) }} />
           <Text style={styles.dateText}>
-            Selected Date: {date.toLocaleDateString()}
+            Selected: {date.toLocaleDateString()} {date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
           </Text>
+
           {showDatePicker && (
             <DateTimePicker
               value={date}
-              mode="date"
+              mode={mode}
               display="default"
+              minuteInterval={15}
               onChange={handleDateChange}
             />
           )}
         </View>
+
 
         <Text style={styles.subtitle}>Select Participants</Text>
         <FlatList
