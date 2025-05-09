@@ -34,17 +34,15 @@ export default {
       adaptiveIcon: {
         foregroundImage: './assets/adaptive-icon.png',
         backgroundColor: '#ffffff'
-      },
-      package: "com.alexe.pokapp", // <-- este es el campo que te falta
+      }
     },
     web: {
       bundler: 'metro'
     },
     extra: {
-      apiBaseUrl: 'https://pokapp-qqce.onrender.com',
-      "eas": {
-              "projectId": "f763183b-4ad8-4107-9c4e-00f2692e238c"
-            }
+      apiBaseUrl: process.env.API_BASE_URL?.includes('localhost')
+        ? process.env.API_BASE_URL.replace('localhost', getLocalIp()) 
+        : process.env.API_BASE_URL
     }
   }
 }
