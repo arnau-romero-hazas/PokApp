@@ -21,7 +21,12 @@ export const roleGuestVip = (id, userId) => {
         // Cambiamos rol al usuario seleccionado a invitado VIP
         .then(userId => {
             if (!userId) throw new NotFoundError('userId not found')
-            if (userId.role === 'guestVIP') throw new NotAllowedError('This user is already guestVIP')
+            if (userId.role === 'guestVIP'){
+                userId.role = 'regular'
+                return userId.save()
+                .catch(error => { throw new SystemError(error.message) })
+                .then(() => {})
+            }
             if (userId.role === 'admin') throw new NotAllowedError('Change the role of an admin is not allowed.')
 
             // Actualizar rol
