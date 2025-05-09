@@ -8,6 +8,7 @@ import { searchUsers } from './users/searchUsers.js'
 import { getUserById } from './users/getUserById.js'
 import { getUsernames } from './users/getUsernames.js'
 import { updateUserProfile } from './users/updateUserProfile.js'
+import { roleGuestVip } from './users/roleGuestVip.js'
 
 import { createGame } from './games/createGame.js'
 import { getGames } from './games/getGames.js'
@@ -35,6 +36,7 @@ export const logic = {
     getUserById,
     getUsernames,
     updateUserProfile,
+    roleGuestVip,
     //getUserRolesByIds,
 
     createGame,

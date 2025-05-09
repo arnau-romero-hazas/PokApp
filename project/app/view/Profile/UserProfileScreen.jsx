@@ -22,6 +22,17 @@ export default function UserProfileScreen({ route, navigation }) {
     }
   }
 
+  const handleGuestVip = (userId) => {
+    try {
+     return logic.roleGuestVIP(userId)
+      .catch(error =>  Alert.alert(error.message))
+      .then(() => Alert.alert('Role has been updated succesfuly!'))
+    } catch (error) {
+      console.error(error)
+      Alert.alert(`Error ❌\n${error.message}`)
+    }
+  }
+
   useEffect(() => {
     Promise.all([
       logic.getUserStatsById(userId),
@@ -63,6 +74,17 @@ export default function UserProfileScreen({ route, navigation }) {
 
           <View style={styles.statsContainer}>
             <Text style={styles.sectionTitle}>Stats (Current Season)</Text>
+
+              {userRole === 'admin' &&  (
+                              <>
+                                <PokerButton
+                                  title="Update Role Guest VIP"
+                                  onPress={() => handleGuestVip(userId)}
+                                  color='#4caf50'
+                                  textColor='#fff'
+                                />
+                              </>
+                            )}
 
             {stats ? (
               <View style={styles.statsCardsContainer}>
