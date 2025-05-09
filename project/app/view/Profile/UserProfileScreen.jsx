@@ -11,6 +11,7 @@ export default function UserProfileScreen({ route, navigation }) {
   const [historicStats, setHistoricStats] = useState(null)
   const [loading, setLoading] = useState(true)
   const [userRole, setUserRole] = useState('')
+  const [userProfileRole, setUserProfileRole] = useState({})
   
   const handleLogoutClick = () => {
     try {
@@ -27,7 +28,11 @@ export default function UserProfileScreen({ route, navigation }) {
     try {
      return logic.roleGuestVip(userId)
       .catch(error =>  Alert.alert(error.message))
-      .then(() => Alert.alert('Role has been updated succesfuly!'))
+      .then(() => logic.getUserRolesByIds([userId]))
+      .then(userProfileRole => {
+        setUserProfileRole(userProfileRole[0])
+        Alert.alert('Role has been updated succesfuly!')
+      })
     } catch (error) {
       console.error(error)
       Alert.alert(`Error ❌\n${error.message}`)
@@ -38,11 +43,13 @@ export default function UserProfileScreen({ route, navigation }) {
     Promise.all([
       logic.getUserStatsById(userId),
       logic.getUserHistoricStatsById(userId),
+      logic.getUserRolesByIds([userId]),
       logic.getUserRole()
     ])
-      .then(([stats, historicStats, userRole]) => {
+      .then(([stats, historicStats, userProfileRole, userRole]) => {
         setStats(stats)
         setHistoricStats(historicStats)
+        setUserProfileRole(userProfileRole[0])
         setUserRole(userRole)
 
           navigation.setOptions(
@@ -61,6 +68,9 @@ export default function UserProfileScreen({ route, navigation }) {
       .finally(() => setLoading(false))
   }, [userId])
 
+  
+  const isGuestVIP = userProfileRole?.role === 'guestVIP'
+
   if (loading) {
     return (
       <View style={styles.centered}>
@@ -76,19 +86,19 @@ export default function UserProfileScreen({ route, navigation }) {
         <View style={styles.container}>
 
           <View style={styles.statsContainer}>
-            <Text style={styles.sectionTitle}>Stats (Current Season)</Text>
-
+            <Text style={styles.roleText}>Current role: {userProfileRole.role}</Text>
               {userRole === 'admin' &&  (
                               <>
                                 <PokerButton
-                                  title="Update Role Guest VIP"
+                                  title={isGuestVIP ? 'Downgrade Role: Regular' : 'Update Role: Guest VIP'}
                                   onPress={() => handleGuestVip(userId)}
-                                  color='#4caf50'
+                                  color={isGuestVIP ? '#f44336' : '#4caf50'}
                                   textColor='#fff'
                                 />
                               </>
                             )}
-
+            
+            <Text style={styles.sectionTitle}>Stats (Current Season)</Text>
             {stats ? (
               <View style={styles.statsCardsContainer}>
                 <View style={styles.statCard}>
