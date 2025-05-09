@@ -91,7 +91,10 @@ export default function CreateGameScreen({ navigation }) {
       }
       setDate(currentDate)
     }
-    setShowDatePicker(false)
+    //setShowDatePicker(false)
+    if (Platform.OS !== 'ios') {
+        setShowDatePicker(false)
+      }
   }
 
 
