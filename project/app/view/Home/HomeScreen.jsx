@@ -25,7 +25,8 @@ const Home = ({ navigation }) => {
         user.role === 'admin' || user.role === 'guestVIP'
       ).length
 
-      const canSetWinner = adminCount >= 1 && adminOrGuestVipCount >= 3
+      const isCasual = game.seasonName?.toLowerCase?.() === 'casual'
+      const canSetWinner = isCasual || (adminCount >= 1 && adminOrGuestVipCount >= 3)
 
       const estimatedPoints = roles.reduce((acc, user) => {
         if (user.id !== currentUserId) acc += user.role === 'admin' ? 1 : 0.5
@@ -178,8 +179,7 @@ const Home = ({ navigation }) => {
           style: 'destructive',
           onPress: () => {
             logic.deleteGame(gameId)
-              .then(() => logic.getGames())
-              .then(({ games }) => setGames(games))
+              .then(() => refreshGamesWithPoints(userId))
               .catch(error => Alert.alert('Error ❌', error.message))
           }
         }
@@ -234,9 +234,15 @@ const Home = ({ navigation }) => {
                   📍 {item.place}
                 </Text>
               )}
-              <Text style={{ color: '#0a3d24', fontWeight: 'bold' }}>
-                🪙 If you win you earn: {item.estimatedPoints} points
-              </Text>
+              {item.seasonName === 'casual' ? (
+                <Text style={{ color: '#555', fontStyle: 'italic', fontWeight: '500' }}>
+                  🎮 This is a casual game
+                </Text>
+              ) : (
+                <Text style={{ color: '#0a3d24', fontWeight: 'bold' }}>
+                  🪙 If you win you earn: {item.estimatedPoints} points
+                </Text>
+              )}
               <View style={{ marginTop: 10 }}>
               <Text style={{ fontWeight: 'bold' }}>Participants:</Text>
               {item.participants.length === 0 ? (
@@ -249,7 +255,7 @@ const Home = ({ navigation }) => {
                     </Text>
                   ))}
 
-                  {userRole === 'admin' && !item.canSetWinner && (
+                  {userRole === 'admin' && !item.canSetWinner && item.seasonName?.toLowerCase?.() !== 'casual' && (
                     <Text style={{
                       color: '#ccc',
                       fontSize: 12,
