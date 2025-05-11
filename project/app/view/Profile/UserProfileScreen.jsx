@@ -87,7 +87,7 @@ export default function UserProfileScreen({ route, navigation }) {
 
           <View style={styles.statsContainer}>
             <Text style={styles.roleText}>Current role: {userProfileRole.role}</Text>
-              {userRole === 'admin' &&  (
+              {userRole === 'admin' && userProfileRole.role !== 'admin' && (
                               <>
                                 <PokerButton
                                   title={isGuestVIP ? 'Downgrade Role: Regular' : 'Update Role: Guest VIP'}

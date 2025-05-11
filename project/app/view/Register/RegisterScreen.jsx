@@ -91,6 +91,7 @@ const Register = ({ navigation }) => {
           placeholderTextColor="#444"
           style={styles.input}
         />
+        <Text style={styles.hint}>Be careful! name and surname can not be changed after registration</Text>
         <TextInput
           value={email}
           onChangeText={setEmail}

@@ -18,25 +18,33 @@ const Home = ({ navigation }) => {
   const refreshGamesWithPoints = async (currentUserId) => {
     const { games } = await logic.getGames()
 
-    const calculatePoints = (game) => {
-      return logic.getUserRolesByIds(game.participants)
-        .then(users =>
-          users.reduce((acc, user) => {
-            if (user.id !== currentUserId)
-              acc += user.role === 'admin' ? 1 : 0.5
-            return acc
-          }, 0)
-        )
+    const calculatePointsAndPermissions = async (game) => {
+      const roles = await logic.getUserRolesByIds(game.participants)
+      const adminCount = roles.filter(user => user.role === 'admin').length
+      const adminOrGuestVipCount = roles.filter(user =>
+        user.role === 'admin' || user.role === 'guestVIP'
+      ).length
+
+      const isCasual = game.seasonName?.toLowerCase?.() === 'casual'
+      const canSetWinner = isCasual || (adminCount >= 1 && adminOrGuestVipCount >= 3)
+
+      const estimatedPoints = roles.reduce((acc, user) => {
+        if (user.id !== currentUserId) acc += user.role === 'admin' ? 1 : 0.5
+        return acc
+      }, 0)
+
+      return {
+        ...game,
+        estimatedPoints,
+        canSetWinner
+      }
     }
 
-    const gamesWithPoints = await Promise.all(
-      games.map(async game => ({
-        ...game,
-        estimatedPoints: await calculatePoints(game)
-      }))
+    const gamesWithExtras = await Promise.all(
+      games.map(game => calculatePointsAndPermissions(game))
     )
 
-    setGames(gamesWithPoints)
+    setGames(gamesWithExtras)
 
     const allParticipantIds = [...new Set(games.flatMap(g => g.participants))]
     const usernamesMap = await logic.getUsernamesByIds(allParticipantIds)
@@ -44,6 +52,7 @@ const Home = ({ navigation }) => {
     usernamesMap.forEach(({ id, username }) => (map[id] = username))
     setUserMap(map)
   }
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -170,8 +179,7 @@ const Home = ({ navigation }) => {
           style: 'destructive',
           onPress: () => {
             logic.deleteGame(gameId)
-              .then(() => logic.getGames())
-              .then(({ games }) => setGames(games))
+              .then(() => refreshGamesWithPoints(userId))
               .catch(error => Alert.alert('Error ❌', error.message))
           }
         }
@@ -226,20 +234,41 @@ const Home = ({ navigation }) => {
                   📍 {item.place}
                 </Text>
               )}
-              <Text style={{ color: '#0a3d24', fontWeight: 'bold' }}>
-                🪙 If you win you earn: {item.estimatedPoints} points
-              </Text>
+              {item.seasonName === 'casual' ? (
+                <Text style={{ color: '#555', fontStyle: 'italic', fontWeight: '500' }}>
+                  🎮 This is a casual game
+                </Text>
+              ) : (
+                <Text style={{ color: '#0a3d24', fontWeight: 'bold' }}>
+                  🪙 If you win you earn: {item.estimatedPoints} points
+                </Text>
+              )}
               <View style={{ marginTop: 10 }}>
               <Text style={{ fontWeight: 'bold' }}>Participants:</Text>
               {item.participants.length === 0 ? (
                 <Text style={{ color: '#999' }}>No participants yet</Text>
               ) : (
-                item.participants.map(partId => (
-                  <Text key={partId} style={{ marginLeft: 8 }}>
-                    • {userMap[partId] || 'Loading...'}
-                  </Text>
-                ))
+                <>
+                  {item.participants.map(partId => (
+                    <Text key={partId} style={{ marginLeft: 8 }}>
+                      • {userMap[partId] || 'Loading...'}
+                    </Text>
+                  ))}
+
+                  {userRole === 'admin' && !item.canSetWinner && item.seasonName?.toLowerCase?.() !== 'casual' && (
+                    <Text style={{
+                      color: '#ccc',
+                      fontSize: 12,
+                      marginTop: 8,
+                      textAlign: 'center',
+                      fontStyle: 'italic'
+                    }}>
+                      ℹ️ Set Winner requires at least 1 admin and 3 total participants (admin or guestVIP)
+                    </Text>
+                  )}
+                </>
               )}
+
               </View>
               {item.status === 'finished' && item.winner && (
               <View style={{ marginTop: 10 }}>
@@ -265,17 +294,20 @@ const Home = ({ navigation }) => {
                 )}
                 {userRole === 'admin' && item.status === 'scheduled' && (
                   <>
-                    <PokerButton
-                      title="Set Winner"
-                      onPress={() => openWinnerModal(item)}
-                      color='#4caf50'
-                      textColor='#fff'
-                    />
+                    {item.canSetWinner && (
+                      <PokerButton
+                        title="Set Winner"
+                        onPress={() => openWinnerModal(item)}
+                        color='#4caf50'
+                        textColor='#fff'
+                      />
+                    )}
+
                     <PokerButton
                       title="Delete Game"
                       onPress={() => handleDeleteGame(item._id)}
-                      color='#a00000'
-                      textColor='#fff'
+                      color="#a00000"
+                      textColor="#fff"
                     />
                     <PokerButton
                       title="Edit Game"
@@ -285,6 +317,7 @@ const Home = ({ navigation }) => {
                     />
                   </>
                 )}
+
               </View>
             </View>
           )

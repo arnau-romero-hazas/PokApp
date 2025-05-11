@@ -6,7 +6,7 @@ const { SystemError } = errors
 export const getUserHistoricStats = (userId) => {
   validate.id(userId, 'userId')
 
-  return Game.find({ status: 'finished', seasonId: { $ne: null } }).lean()
+  return Game.find({ status: 'finished', seasonId: { $ne: null }, seasonName: { $ne: 'casual'} }).lean()
     .catch(error => { throw new SystemError(error.message) })
     .then(games => {
       let gamesPlayed = 0
